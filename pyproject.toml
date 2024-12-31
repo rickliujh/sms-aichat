@@ -4,7 +4,11 @@ version = "0.1.0"
 description = "A small Python demo project for chatting with LLM using SMS, deploy on AWS Lambda using terraform"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "aws-lambda-powertools>=3.4.0",
+    "huggingface-hub>=0.27.0",
+    "twilio>=9.4.1",
+]
 
 [mypy]
 disallow_untyped_defs = true
@@ -18,3 +22,6 @@ show_error_codes = true
 [[tool.mypy.overrides]] 
 module = ["twilio.*", "huggingface_hub.*"]
 ignore_missing_imports = true
+
+[dependency-groups]
+dev = []

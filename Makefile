@@ -1,5 +1,11 @@
+#!make
 PJNAME := sms-aichat
 PJVER := test
+
+ifneq (,$(wildcard .env))
+	include .env
+    ENV_VARS := $(shell awk 'NF {print}' .env | xargs)
+endif
 
 Objects = *.py
 
@@ -24,14 +30,14 @@ build: expt clean
 	docker build --platform linux/amd64 -t $(PJNAME):$(PJVER) .
 
 run:
-	docker run --rm --platform linux/amd64 -p 9000:8080 $(PJNAME):$(PJVER)
+	docker run --rm --platform linux/amd64 -p 9000:8080 --env-file ./.env $(PJNAME):$(PJVER)
 
 clean:
-	docker rmi $(PJNAME):$(PJVER)
+	docker rmi $(PJNAME):$(PJVER) || true
 	@echo "Clean completed."
 
 test:
 	@echo "Running local tests..."
-	curl "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}' --request 'POST'
+	curl "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"prompt":$(PROMPT)}' --request 'POST'
 
 .PHONY: all init expt lint fix build run clean test
