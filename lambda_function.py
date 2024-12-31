@@ -6,10 +6,17 @@ from aws_lambda_powertools.utilities.data_classes import ALBEvent
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
 logger = Logger()
-client = InferenceClient(api_key=os.environ["HGF_KEY"])
+twilioAcSid = os.environ["TWILIO_ACCOUNTSID"]
+hgfApiKey=os.environ["HGF_KEY"]
+client = InferenceClient(api_key=hgfApiKey)
 
+def verify(acSid: string, apikey: string):
+    if len(acSid) is 0 or len(apikey) is 0:
+        raise Exception("Twilio AccountSid and/or Huggingface API key are missing")
 
 def handler(event: ALBEvent, context: LambdaContext):
+    verify(twilioAcSid, hgfApiKey)
+
     logger.info("prompt incoming")
     logger.debug("prompt payload: ", extra={"event": event, "context": context})
 
