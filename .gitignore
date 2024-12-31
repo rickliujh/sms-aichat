@@ -169,3 +169,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# requirements.txt should be generated from uv.lock by using make expt
+requirements.txt

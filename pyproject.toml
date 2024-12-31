@@ -1,0 +1,20 @@
+[project]
+name = "sms-aichat"
+version = "0.1.0"
+description = "A small Python demo project for chatting with LLM using SMS, deploy on AWS Lambda using terraform"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[mypy]
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+
+[[tool.mypy.overrides]] 
+module = ["twilio.*", "huggingface_hub.*"]
+ignore_missing_imports = true
