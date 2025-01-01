@@ -24,4 +24,9 @@ module = ["twilio.*", "huggingface_hub.*"]
 ignore_missing_imports = true
 
 [dependency-groups]
-dev = []
+dev = [
+    "aws-lambda-powertools[validation]>=3.4.0",
+    "mypy>=1.14.1",
+    "pytest>=8.3.4",
+    "python-dotenv>=1.0.1",
+]
