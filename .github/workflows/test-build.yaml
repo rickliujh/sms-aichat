@@ -68,8 +68,9 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-  depoly:
+  deploy:
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
     # Check out the code
@@ -88,7 +89,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: $${{ secrets.AWS_IAM_ROLE_PLAN }}
-        aws-region: ${aws_region}
+        aws-region: ${{ vars.AWS_REGION }}
 
     # Initialize Terraform
     - name: Terraform init
@@ -198,7 +199,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: $${{ secrets.AWS_IAM_ROLE_APPLY }}
-        aws-region: ${aws_region}
+        aws-region: ${{ vars.AWS_REGION }}
 
     # Only apply if this is on the main branch (after merging)
     - name: Terraform Apply
