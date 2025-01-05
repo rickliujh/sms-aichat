@@ -45,6 +45,13 @@ jobs:
 
     # - name: Testing
     #   run: make test
+  
+    # Set up the AWS credentials for this repo
+    - name: Configure AWS credentials PR (ecr-push-only)
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: $${{ secrets.AWS_IAM_ROLE_ECR }}
+        aws-region: ${aws_region}
 
     - name: Login to Amazon ECR
       id: login-ecr
