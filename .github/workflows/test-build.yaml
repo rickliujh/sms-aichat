@@ -1,0 +1,61 @@
+# Managed by the build-on-aws/terraform-samples/modules/bootstrap-cicd-github-actions
+# module. While changes won't be overwritten unless you run it locally and commit, 
+# it is recommended not to make changes to this file directly.
+name: "Test and Build Workflows"
+run-name: $${{ github.actor }} Test and Build the image that push to ECR
+
+on:
+  push:
+    branches:
+      - main 
+  
+  pull_request:
+    branches:
+      - main  
+
+permissions:
+  id-token: write   # This is required for requesting the JWT to interact with AWS
+  contents: read    # This is required for actions/checkout
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["pypy3.10", "3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+    # Check out the code
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5 
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up Python
+      run: uv python install
+
+    - name: Install the project
+      run: uv sync --all-extras --dev
+
+    - name: Linting
+      run: make lint
+
+    - name: Testing
+      run: make test
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build image
+      env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build --platform linux/amd64 -t $ECR_REGISTRY/$${ vars.ECR_REPOSITORY }/$ECR_REPOSITORY:$IMAGE_TAG }:$IMAGE_TAG
+        docker push $ECR_REGISTRY/:$${ vars.ECR_REPOSITORY }:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$${ vars.ECR_REPOSITORY }:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
