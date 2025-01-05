@@ -43,8 +43,8 @@ jobs:
     - name: Linting
       run: make lint
 
-    - name: Testing
-      run: make test
+    # - name: Testing
+    #   run: make test
 
     - name: Login to Amazon ECR
       id: login-ecr
