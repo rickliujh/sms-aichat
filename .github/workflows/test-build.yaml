@@ -2,7 +2,7 @@
 # module. While changes won't be overwritten unless you run it locally and commit, 
 # it is recommended not to make changes to this file directly.
 name: "Test and Build Workflows"
-run-name: $${{ github.actor }} Test and Build the image that push to ECR
+run-name: ${{ github.actor }} Test and Build the image that push to ECR
 
 on:
   push:
@@ -97,21 +97,21 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: terraform init -no-color
-      working-directory: ./terrform
+      working-directory: terraform
       continue-on-error: true
 
     # Ensure code is formatted correctly
     - name: Terraform fmt
       id: fmt
       run: terraform fmt -check -no-color
-      working-directory: ./terrform
+      working-directory: terraform
       continue-on-error: true
 
     # Validate the terraform code is valid
     - name: Terraform validate
       id: validate
       run: terraform validate -no-color
-      working-directory: ./terrform
+      working-directory: terraform
       continue-on-error: true
 
     # Generate the plan
@@ -153,7 +153,7 @@ jobs:
 
           exit 0
         fi
-      working-directory: ./terrform
+      working-directory: terraform
       continue-on-error: true
 
     # Write the status of prior steps as a comment on the PR
@@ -209,4 +209,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         TF_VAR_image_tag: ${ github.sha }
       run: terraform apply -auto-approve -input=false
-      working-directory: ./terrform
+      working-directory: terraform
