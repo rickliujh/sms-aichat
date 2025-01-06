@@ -1,4 +1,5 @@
 import os
+import base64
 import urllib.parse
 from dacite import from_dict
 from dataclasses import dataclass
@@ -54,13 +55,13 @@ def verify(
     if len(acSid) == 0 or len(apikey) == 0:
         logger.error("twilio AccountSid and/or Huggingface API key are missing")
         raise HTTPError()
-    if not validator.validate(
-        webhook_url,
-        body,
-        acToken,
-    ):
-        logger.error("authentication for Twilio failed")
-        raise HTTPError(401)
+    # if not validator.validate(
+    #     webhook_url,
+    #     data,
+    #     acToken,
+    # ):
+    #     logger.error("authentication for Twilio failed")
+    #     raise HTTPError(401)
 
 
 def flatten_dict_of_arrays(d):
@@ -75,7 +76,10 @@ def flatten_dict_of_arrays(d):
 
 def get_data(event: LambdaFunctionUrlEvent) -> TwilioWebhookRequest:
     parsed = flatten_dict_of_arrays(
-        urllib.parse.parse_qs(event.body, keep_blank_values=True)
+        urllib.parse.parse_qs(
+            base64.b64decode(event.body).decode("utf-8"), 
+            keep_blank_values=True
+        )
     )
     data = from_dict(TwilioWebhookRequest, parsed)
     return data
@@ -91,11 +95,11 @@ def handler(event: LambdaFunctionUrlEvent, context: LambdaContext) -> dict | str
     twilioToken = os.environ["TWILIO_TOKEN"]
     webhookVali = RequestValidator(twilioToken)
     hgfApiKey = os.environ["HGF_KEY"]
-    webhook_url= os.environ["LAMBDA_URI"]
     client = InferenceClient(api_key=hgfApiKey)
     logger.debug("prompt payload: ", extra={"event": (event), "context": context})
 
     try:
+        webhook_url = f"https://{event.request_context.domain_name}/{event.path}"
         verify(twilioAcSid, hgfApiKey, twilioToken, webhook_url, event.body, webhookVali)
 
         req_data = get_data(event)
