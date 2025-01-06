@@ -1,12 +1,18 @@
 import os
+import urllib.parse
+from dacite import from_dict
+from dataclasses import dataclass
 from huggingface_hub import InferenceClient
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio.request_validator import RequestValidator
 from aws_lambda_powertools import Logger
-from aws_lambda_powertools.utilities.data_classes import event_source, ALBEvent
+from aws_lambda_powertools.utilities.data_classes import (
+    event_source,
+    LambdaFunctionUrlEvent,
+)
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-logger = Logger()
+logger = Logger(service="sms-chat-handler")
 
 
 class HTTPError(Exception):
@@ -14,8 +20,35 @@ class HTTPError(Exception):
         self.status_code = code
 
 
+@dataclass
+class TwilioWebhookRequest:
+    ToCountry: str | None
+    ToState: str | None
+    SmsMessageSid: str | None
+    NumMedia: str | None
+    ToCity: str | None
+    FromZip: str | None
+    SmsSid: str | None
+    FromState: str | None
+    SmsStatus: str | None
+    FromCity: str | None
+    Body: str
+    FromCountry: str | None
+    To: str
+    ToZip: str | None
+    NumSegments: str | None
+    MessageSid: str
+    AccountSid: str
+    From: str
+    ApiVersion: str
+
+
 def verify(
-    acSid: str, apikey: str, acToken: str, event: ALBEvent, validator: RequestValidator
+    acSid: str,
+    apikey: str,
+    acToken: str,
+    event: LambdaFunctionUrlEvent,
+    validator: RequestValidator,
 ):
     if len(acSid) == 0 or len(apikey) == 0:
         logger.error("twilio AccountSid and/or Huggingface API key are missing")
@@ -29,12 +62,30 @@ def verify(
         raise HTTPError(401)
 
 
-def get_prompt(event: ALBEvent) -> str:
-    return event.get  # type: ignore
+def flatten_dict_of_arrays(d):
+    flattened_dict = {}
+    for key, value in d.items():
+        if isinstance(value, list) and len(value) == 1:
+            flattened_dict[key] = value[0]
+        else:
+            flattened_dict[key] = value
+    return flattened_dict
 
 
-@event_source(data_class=ALBEvent)
-def handler(event: ALBEvent, context: LambdaContext) -> dict | str:
+def get_data(event: LambdaFunctionUrlEvent) -> TwilioWebhookRequest:
+    parsed = flatten_dict_of_arrays(
+        urllib.parse.parse_qs(event.body, keep_blank_values=True)
+    )
+    data = from_dict(TwilioWebhookRequest, parsed)
+    return data
+
+
+def get_prompt(event: LambdaFunctionUrlEvent) -> str:
+    return get_data(event).Body
+
+
+@event_source(data_class=LambdaFunctionUrlEvent)
+def handler(event: LambdaFunctionUrlEvent, context: LambdaContext) -> dict | str:
     twilioAcSid = os.environ["TWILIO_ACCOUNTSID"]
     twilioToken = os.environ["TWILIO_TOKEN"]
     webhookVali = RequestValidator(twilioToken)
@@ -45,11 +96,14 @@ def handler(event: ALBEvent, context: LambdaContext) -> dict | str:
     try:
         verify(twilioAcSid, hgfApiKey, twilioToken, event, webhookVali)
 
+        req_data = get_data(event)
+        prompt = get_prompt(event)
+
+        logger.append_keys(message_id=req_data.MessageSid)
         logger.info("prompt incoming")
         logger.debug("prompt payload: ", extra={"event": (event), "context": context})
 
         resp = MessagingResponse()
-        prompt = get_prompt(event)
         if prompt is None:
             resp.message("No prompt found.")
             logger.info("request without a prompt.", extra={"event": event})
