@@ -134,6 +134,7 @@ def handler(event: LambdaFunctionUrlEvent, context: LambdaContext) -> dict | str
 
         return  {
             "statusCode": 200,
+            "headers": { "Content-Type": "text/xml"},
             "body": str(resp)
         }   
     except HTTPError as err:
