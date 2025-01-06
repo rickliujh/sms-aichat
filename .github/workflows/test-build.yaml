@@ -200,8 +200,6 @@ jobs:
       with:
         role-to-assume: ${{ secrets.AWS_IAM_ROLE_APPLY }}
         aws-region: ${{ vars.AWS_REGION }}
-        role-chaining: true
-
 
     # Only apply if this is on the main branch (after merging)
     - name: Terraform Apply
