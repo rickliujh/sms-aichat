@@ -47,15 +47,16 @@ def verify(
     acSid: str,
     apikey: str,
     acToken: str,
-    event: LambdaFunctionUrlEvent,
+    webhook_url: str,
+    data:str,
     validator: RequestValidator,
 ):
     if len(acSid) == 0 or len(apikey) == 0:
         logger.error("twilio AccountSid and/or Huggingface API key are missing")
         raise HTTPError()
     if not validator.validate(
-        event.path,
-        event.body,
+        webhook_url,
+        body,
         acToken,
     ):
         logger.error("authentication for Twilio failed")
@@ -90,11 +91,12 @@ def handler(event: LambdaFunctionUrlEvent, context: LambdaContext) -> dict | str
     twilioToken = os.environ["TWILIO_TOKEN"]
     webhookVali = RequestValidator(twilioToken)
     hgfApiKey = os.environ["HGF_KEY"]
+    webhook_url= os.environ["LAMBDA_URI"]
     client = InferenceClient(api_key=hgfApiKey)
     logger.debug("prompt payload: ", extra={"event": (event), "context": context})
 
     try:
-        verify(twilioAcSid, hgfApiKey, twilioToken, event, webhookVali)
+        verify(twilioAcSid, hgfApiKey, twilioToken, webhook_url, event.body, webhookVali)
 
         req_data = get_data(event)
         prompt = get_prompt(event)
