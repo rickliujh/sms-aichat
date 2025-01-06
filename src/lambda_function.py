@@ -49,7 +49,7 @@ def verify(
     apikey: str,
     acToken: str,
     webhook_url: str,
-    data:str,
+    data: str,
     validator: RequestValidator,
 ):
     if len(acSid) == 0 or len(apikey) == 0:
@@ -77,8 +77,7 @@ def flatten_dict_of_arrays(d):
 def get_data(event: LambdaFunctionUrlEvent) -> TwilioWebhookRequest:
     parsed = flatten_dict_of_arrays(
         urllib.parse.parse_qs(
-            base64.b64decode(event.body).decode("utf-8"), 
-            keep_blank_values=True
+            base64.b64decode(event.body).decode("utf-8"), keep_blank_values=True
         )
     )
     data = from_dict(TwilioWebhookRequest, parsed)
@@ -100,7 +99,9 @@ def handler(event: LambdaFunctionUrlEvent, context: LambdaContext) -> dict | str
 
     try:
         webhook_url = f"https://{event.request_context.domain_name}/{event.path}"
-        verify(twilioAcSid, hgfApiKey, twilioToken, webhook_url, event.body, webhookVali)
+        verify(
+            twilioAcSid, hgfApiKey, twilioToken, webhook_url, event.body, webhookVali
+        )
 
         req_data = get_data(event)
         prompt = get_prompt(event)
@@ -127,15 +128,12 @@ def handler(event: LambdaFunctionUrlEvent, context: LambdaContext) -> dict | str
 
         logger.info("sending response to use after inferencce completed")
 
-        resp.message(
-            completion.choices[0].message.content,
-            req_data.From 
-        )
+        resp.message(completion.choices[0].message.content)
 
-        return  {
+        return {
             "statusCode": 200,
-            "headers": { "Content-Type": "text/xml"},
-            "body": str(resp)
-        }   
+            "headers": {"Content-Type": "text/xml"},
+            "body": str(resp),
+        }
     except HTTPError as err:
         return {"statusCode": err.status_code}
