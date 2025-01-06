@@ -127,7 +127,10 @@ def handler(event: LambdaFunctionUrlEvent, context: LambdaContext) -> dict | str
 
         logger.info("sending response to use after inferencce completed")
 
-        resp.message(completion.choices[0].message.content)
+        resp.message(
+            completion.choices[0].message.content,
+            req_data.From 
+        )
 
         return str(resp)
     except HTTPError as err:
