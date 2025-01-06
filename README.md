@@ -23,7 +23,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ### Make
 
-`make` and Makefile are build system this project use to do most of staff
+`make` and Makefile are build system this project use to do most of stuff
 
 ```
 # Install all dependencies for the project
@@ -68,19 +68,19 @@ Spin up infrastructure using terraform. The tf scripts contain both infra in AWS
 
 ### Flow
 
-In order to achieve a functional ai-chat using SMS or whatsapp, we need 3 parts of the puzzle: A LLM inference, A Mobile carrier for SMS, A piece of code that glue that 2 parts together.
+In order to achieve a functional ai-chat using SMS or whatsapp, we need 3 parts of the puzzle: A LLM inference, A mobile carrier for SMS, A piece of code that glue that 2 parts together.
 
-This project uses webhook that carrier provided as Lambda trigger. When a SMS is sent to designate number, a HTTP call has made to our lambda handler, along with the message in the SMS, in turn a inference has made to LLM with message as prompt, the code response the HTTP request (webhook) from carrier with result from LLM and ends the procedure.
+This project uses webhook that carrier provided as Lambda trigger. When a SMS is sent to designate number, a HTTP request is made to the lambda handler, along with the message in the SMS, in turn a inference of LLM is made with message as prompt, the code responses the HTTP request (to webhook) from carrier with result from LLM and ends the procedure.
 
 ![Overview](system-overview.png)
 
 ### Scale
 
-We assume that mobile carrier as 3th party provider has enough capacity handling the initial request.
+The mobile carrier as 3th party provider has enough capacity handling the initial requests is assumed.
 
-The system is design to use API as service for LLM, which means the LLM can be self-hosted or another 3th party provider, ether case the scaling issue can be addressed independently, more details according to this matter is out of scope.
+The system is designed to use of API as service for LLM, which means the LLM can be self-hosted or another 3th party provider, ether case the scaling issue can be addressed independently, more details according to this matter is out of the scope.
 
-The Lambda handler is server less service, which means it self handles all the scaling issue.
+The Lambda handler is server less, which means itself handles all the scaling issue.
 
 ## Development
 
@@ -92,14 +92,14 @@ The Lambda handler is server less service, which means it self handles all the s
 - Unit test
     - Unit test is placed in ./tests/unit/src
     - Data for unit test is in ./tests/events
-    - CI will check on branch `main` or pull request to make sure unit test is satisfied
-    - All unit test files will be checked during linting
+    - CI checks on `main` branch or pull request to make sure unit test is satisfied
+    - All unit test files will be checked during the linting
 - Pipeline
     - Pipeline will run on any commit on `main` branch or pull requests
     - 3 stages include
         - test: test the code and linting
         - build: the code will be packaged as Docker Image that push to AWS ECR
-        - deploy: A terraform script will run through plan and apply, if pipeline triggered by pull request, a plan will be placed in comment for review, apply will be run after pull request checking in to `main` branch
+        - deploy: A terraform script will run through plan and apply, if pipeline triggered by pull request, a output of plan will be placed in comment for review, apply will be run after pull request branch merges into `main` branch
 
 ## Infrastructure
 
@@ -127,9 +127,16 @@ Terraform managed all the infrastructures on AWS, includes: ECR, S3, DynamoDB, L
 - S3, DynamoDB for Terraform backend state tracking
 - Lambda for running python code
 - Cloudwatch for logging propose
-- VPC in which lambda function is running has security group that only allows incoming traffic from Mobile carrier's ip address
+- VPC in which lambda function is running has security group that only allows incoming traffic from Mobile carrier's ip address (constructing)
 - IAM policies an role are all fine-grained to the minimum permission possible
+
+Lambda environment variables are among the few resources not managed in Terraform due to their sensitive nature, those secretes are stored on parameter store of SSM managed manually. Terrafrom retrieves these envrionment variables from SSM and updates lambda during the `tf apply`, no literal credential is present in terraform files.
 
 ## References
 
-- 
+- [uv | An extremely fast Python package and project manager, written in Rust.](https://docs.astral.sh/uv/)
+- [Create AWS Lambda proxy integrations for HTTP APIs in API Gateway - Amazon API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html)
+- [Homepage - Powertools for AWS Lambda (Python)](https://docs.powertools.aws.dev/lambda/python/latest/)
+- [TwiML™ for Programmable Messaging | Twilio](https://www.twilio.com/docs/messaging/twiml#twilios-request-to-your-application)
+- [build-on-aws/terraform-samples: Collections of examples of using Terraform with AWS](https://github.com/build-on-aws/terraform-samples/tree/main)
+- [Deploy Python Lambda functions with container images - AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/python-image.html)
