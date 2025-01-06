@@ -30,7 +30,7 @@ def verify(
 
 
 def get_prompt(event: ALBEvent) -> str:
-    return event.body["prompt"]  # type: ignore
+    return event.get  # type: ignore
 
 
 @event_source(data_class=ALBEvent)
@@ -40,6 +40,7 @@ def handler(event: ALBEvent, context: LambdaContext) -> dict | str:
     webhookVali = RequestValidator(twilioToken)
     hgfApiKey = os.environ["HGF_KEY"]
     client = InferenceClient(api_key=hgfApiKey)
+    logger.debug("prompt payload: ", extra={"event": (event), "context": context})
 
     try:
         verify(twilioAcSid, hgfApiKey, twilioToken, event, webhookVali)
