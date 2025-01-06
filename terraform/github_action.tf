@@ -8,7 +8,7 @@ locals {
   github_provider_version                = "6.0"
   iam_role_name_apply                    = "gh-tf-apply-${substr(local.github_repository, 0, 64 - length("gh-tf-apply-"))}"
   iam_role_name_plan                     = "gh-tf-plan-${substr(local.github_repository, 0, 64 - length("gh-tf-apply-"))}"
-  iam_policy_apply                       = "arn:aws:iam::aws:policy/AWSLambda_FullAccess"
+  iam_policy_apply                       = "arn:aws:iam::aws:policy/AdministratorAccess"
   iam_policy_plan                        = "arn:aws:iam::aws:policy/ReadOnlyAccess"
   aws_ssm_name_github_token              = "/cicd/github_token"
   github_terraform_workflow_file         = "terraform.yml"
