@@ -1,52 +1,90 @@
 {
-    "body": { "prompt": "What is the capital of France?"},
-    "resource": "/{proxy+}",
-    "requestContext": {
-        "resourceId": "123456",
-        "apiId": "1234567890",
-        "resourcePath": "/{proxy+}",
-        "httpMethod": "POST",
-        "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
-        "accountId": "123456789012",
-        "identity": {
-            "apiKey": "",
-            "userArn": "",
-            "cognitoAuthenticationType": "",
-            "caller": "",
-            "userAgent": "Custom User Agent String",
-            "user": "",
-            "cognitoIdentityPoolId": "",
-            "cognitoIdentityId": "",
-            "cognitoAuthenticationProvider": "",
-            "sourceIp": "127.0.0.1",
-            "accountId": ""
+    "body":"VG9Db3VudHJ5PVVTJlRvU3RhdGU9Q0EmU21zTWVzc2FnZVNpZD1TTTZjN2Q0aG03YWZ0ZXN0dGVzdDczOTYzOTJiNDY1OGQyJk51bU1lZGlhPTAmVG9DaXR5PVNhbitGcmFuY2lzY28mRnJvbVppcD0mU21zU2lkPVNNNmM3ZDRobTdhZnRlc3R0ZXN0NzM5NjM5MmI0NjU4ZDImRnJvbVN0YXRlPSZTbXNTdGF0dXM9cmVjZWl2ZWQmRnJvbUNpdHk9JkJvZHk9V2hhdCtpcyt0aGUrY2FwaXRhbCtvZitGcmFuY2UlM0YmRnJvbUNvdW50cnk9VVMmVG89JTJCMTYyODIyMzQxMDAmVG9aaXA9Jk51bVNlZ21lbnRzPTEmTWVzc2FnZVNpZD1TTTZjN2Q0aG03YWZ0ZXN0dGVzdDczOTYzOTJiNDY1OGQyJkFjY291bnRTaWQ9QUNjYWJjNTJmYWZhdGVzdHRlc3Q2ZmIwMTcxJkZyb209JTJCMTg3MzQyMzE1MyZBcGlWZXJzaW9uPTIwMTAtMDQtMDE=",
+    "cookies":[
+        
+    ],
+    "headers":{
+        "content-length":"421",
+        "x-amzn-tls-version":"TLSv1.3",
+        "x-forwarded-proto":"https",
+        "x-forwarded-port":"443",
+        "x-forwarded-for":"54.91.240.145",
+        "x-twilio-signature":"1JKrPJDcasG34Gf7ue5test/RkoI=",
+        "x-home-region":"us1",
+        "accept":"*/*",
+        "x-amzn-tls-cipher-suite":"TLS_AES_128_GCM_SHA256",
+        "x-amzn-trace-id":"Self=1-677c17f4-745685adG34Gfda33a583825;Root=1-677c17f4-4bd31af463017aa91f26526f",
+        "i-twilio-idempotency-token":"bab1e8e5-c15f-4f4a-a4c4-4d90230e121f",
+        "host":"test.lambda-url.us-east-10.on.aws",
+        "content-type":"application/x-www-form-urlencoded",
+        "accept-encoding":"gzip,deflate",
+        "user-agent":"TwilioProxy/1.1"
+    },
+    "http_method":"POST",
+    "is_base64_encoded":true,
+    "multi_value_query_string_parameters":{
+        
+    },
+    "path":"/",
+    "path_parameters":{
+        
+    },
+    "query_string_parameters":{
+        
+    },
+    "raw_event":"[SENSITIVE]",
+    "raw_path":"/",
+    "raw_query_string":"",
+    "request_context":{
+        "account_id":"anonymous",
+        "api_id":"test",
+        "authentication":"None",
+        "authorizer":{
+            "get_lambda":{
+                
+            },
+            "iam":{
+                "access_key":"",
+                "account_id":"",
+                "caller_id":"",
+                "cognito_amr":[
+                    
+                ],
+                "cognito_identity_id":"",
+                "cognito_identity_pool_id":"",
+                "principal_org_id":"",
+                "raw_event":"[SENSITIVE]",
+                "user_arn":"",
+                "user_id":""
+            },
+            "jwt_claim":{
+                
+            },
+            "jwt_scopes":[
+                
+            ],
+            "raw_event":"[SENSITIVE]"
         },
-        "stage": "prod"
+        "domain_name":"test.lambda-url.us-east-1.on.aws",
+        "domain_prefix":"test",
+        "http":{
+            "method":"POST",
+            "path":"/",
+            "protocol":"HTTP/1.1",
+            "raw_event":"[SENSITIVE]",
+            "source_ip":"54.91.240.145",
+            "user_agent":"TwilioProxy/1.1"
+        },
+        "raw_event":"[SENSITIVE]",
+        "request_id":"561a4f1e-1d4c-40c1-be71-f561a4f17235",
+        "route_key":"$default",
+        "stage":"$default",
+        "time":"06/Jan/2025:17:50:44 +0000",
+        "time_epoch":1736185844989
     },
-    "queryStringParameters": {"foo": "bar"},
-    "headers": {
-        "Via": "1.1 08f323deadbeefa7af34d5feb414ce27.cloudfront.net (CloudFront)",
-        "Accept-Language": "en-US,en;q=0.8",
-        "CloudFront-Is-Desktop-Viewer": "true",
-        "CloudFront-Is-SmartTV-Viewer": "false",
-        "CloudFront-Is-Mobile-Viewer": "false",
-        "X-Forwarded-For": "127.0.0.1, 127.0.0.2",
-        "CloudFront-Viewer-Country": "US",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Upgrade-Insecure-Requests": "1",
-        "X-Forwarded-Port": "443",
-        "Host": "1234567890.execute-api.us-east-1.amazonaws.com",
-        "X-Forwarded-Proto": "https",
-        "X-Amz-Cf-Id": "aaaaaaaaaae3VYQb9jd-nvCd-de396Uhbp027Y2JvkCPNLmGJHqlaA==",
-        "CloudFront-Is-Tablet-Viewer": "false",
-        "Cache-Control": "max-age=0",
-        "User-Agent": "Custom User Agent String",
-        "CloudFront-Forwarded-Proto": "https",
-        "Accept-Encoding": "gzip, deflate, sdch",
-        "X-Twilio-Signature": "fake-signature"
+    "route_key":"$default",
+    "stage_variables":{
+        
     },
-    "pathParameters":  { "docType" : "WELCOME", "customerId" : "SampleCustomer0001" },
-    "httpMethod": "POST",
-    "stageVariables": {"baz": "qux"},
-    "path": "/examplepath"
+    "version":"2.0"
 }
