@@ -37,11 +37,11 @@ jobs:
     - name: Install the project
       run: uv sync --all-extras --dev
 
-    # - name: Linting
-    #  run: make lint
+    - name: Linting
+     run: make lint
 
-    # - name: Testing
-    #   run: make test
+    - name: Testing
+      run: make test
     
   build:
     runs-on: ubuntu-latest
