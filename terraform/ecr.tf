@@ -33,29 +33,9 @@ data "aws_iam_policy_document" "chat_ecr" {
   }
 }
 
-data "aws_iam_policy_document" "chat_ecr_lambda_pull_permissions" {
-  statement {
-    sid    = "LambdaECRImageRetrievalPolicy"
-    effect = "Allow"
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-    actions = [
-      "ecr:BatchGetImage",
-      "ecr:GetDownloadUrlForLayer"
-    ]
-  }
-}
-
 resource "aws_ecr_repository_policy" "chat_ecr_general" {
   repository = aws_ecr_repository.chat.name
   policy     = data.aws_iam_policy_document.chat_ecr.json
-}
-
-resource "aws_ecr_repository_policy" "chat_ecr_lambda" {
-  repository = aws_ecr_repository.chat.name
-  policy     = data.aws_iam_policy_document.chat_ecr_lambda_pull_permissions.json
 }
 
 data "aws_iam_policy_document" "github_actions_ecr_push_permissions" {
@@ -63,7 +43,6 @@ data "aws_iam_policy_document" "github_actions_ecr_push_permissions" {
     sid    = "AllowEcrPushOnlyGithubActions"
     effect = "Allow"
     actions = [
-      "ecr:GetAuthorizationToken",
       "ecr:BatchCheckLayerAvailability",
       "ecr:CompleteLayerUpload",
       "ecr:InitiateLayerUpload",

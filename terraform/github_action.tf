@@ -11,7 +11,6 @@ locals {
   iam_policy_apply                       = "arn:aws:iam::aws:policy/AdministratorAccess"
   iam_policy_plan                        = "arn:aws:iam::aws:policy/ReadOnlyAccess"
   aws_ssm_name_github_token              = "/cicd/github_token"
-  github_terraform_workflow_file         = "terraform.yml"
   github_env_var_name_iam_role_plan_arn  = "AWS_IAM_ROLE_PLAN"
   github_env_var_name_iam_role_apply_arn = "AWS_IAM_ROLE_APPLY"
   github_env_var_name_aws_region         = "AWS_REGION"

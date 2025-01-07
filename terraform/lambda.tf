@@ -1,5 +1,6 @@
 locals {
   lambda_function_name           = "sms-aichat-webhook"
+  lambda_function_log_level      = "DEBUG"
   aws_region                     = "us-east-1"
   aws_ssm_name_hgf_key           = "/sms-chat/hgf_key"
   aws_ssm_name_twilio_accountsid = "/sms-chat/twilio_accountsid"
@@ -46,15 +47,17 @@ resource "aws_lambda_function" "chat" {
   package_type  = "Image"
 
   logging_config {
-    log_format = "JSON"
+    log_format            = "JSON"
+    application_log_level = local.lambda_function_log_level
   }
 
   environment {
     variables = {
-      POWERTOOLS_LOG_LEVEL = "DEBUG"
+      POWERTOOLS_LOG_LEVEL = local.lambda_function_log_level
       HGF_KEY              = data.aws_ssm_parameter.hgf_key.value
       TWILIO_ACCOUNTSID    = data.aws_ssm_parameter.twilio_accountsid.value
       TWILIO_TOKEN         = data.aws_ssm_parameter.twilio_token.value
+      LAMBDA_URI           = aws_lambda_function_url.chat_lambda_pub.function_url
     }
   }
 
@@ -67,8 +70,8 @@ resource "aws_lambda_function" "chat" {
   tags = local.tags
 }
 
-resource "aws_lambda_function_url" "test_latest" {
-  function_name      = aws_lambda_function.chat.function_name
+resource "aws_lambda_function_url" "chat_lambda_pub" {
+  function_name      = local.lambda_function_name
   authorization_type = "NONE"
 }
 
