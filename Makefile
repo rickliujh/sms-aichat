@@ -41,6 +41,6 @@ clean:
 
 test:
 	@echo "Running local tests..."
-	uv run pytest
+	uv run pytest -o log_cli=true -vv
 
 .PHONY: all init expt lint fix build run invoke clean test
