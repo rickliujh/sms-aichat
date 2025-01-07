@@ -1,8 +1,8 @@
 # Managed by the build-on-aws/terraform-samples/modules/bootstrap-cicd-github-actions
 # module. While changes won't be overwritten unless you run it locally and commit, 
 # it is recommended not to make changes to this file directly.
-name: "Test and Build Workflows"
-run-name: ${{ github.actor }} Test and Build the image that push to ECR
+name: "General Workflows"
+run-name: ${{ github.actor }} runs to dev env
 
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
       run: uv sync --all-extras --dev
 
     - name: Linting
-     run: make lint
+      run: make lint
 
     - name: Testing
       run: make test
