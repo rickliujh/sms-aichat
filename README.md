@@ -72,7 +72,7 @@ In order to achieve a functional ai-chat using SMS or whatsapp, we need 3 parts 
 
 This project uses webhook that carrier provided as Lambda trigger. When a SMS is sent to designate number, a HTTP request is made to the lambda handler, along with the message in the SMS, in turn a inference of LLM is made with message as prompt, the code responses the HTTP request (to webhook) from carrier with result from LLM and ends the procedure.
 
-![Overview](system-overview.png)
+![Overview](./static/system-overview.png)
 
 ### Scale
 
@@ -105,7 +105,7 @@ The Lambda handler is server less, which means itself handles all the scaling is
 
 This project uses `terraform` to manage the infrastructure. Includes two part: Github and AWS
 
-![infra design](infra-dialog.png)
+![infra design](./static/infra-dialog.png)
 
 ### Github
 
