@@ -44,3 +44,4 @@ def handler(event: LambdaFunctionUrlEvent, context: LambdaContext) -> dict | str
     except HTTPError as err:
         logger.error("request invalid", err)
         return {"statusCode": err.status_code}
+
